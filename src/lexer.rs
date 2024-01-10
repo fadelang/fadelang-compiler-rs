@@ -52,7 +52,7 @@ where
     while let Some(char) = iterator.next() {
         // todo: cleanup
         if is_valid_char_for_radix(&char, radix) {
-            value = value * radix + get_char_value(&char);
+            value = value * radix + get_char_value(char) as isize;
         } else if char == ' ' || char == '\t' || char == '\n' {
             break;
         } else {
@@ -71,24 +71,10 @@ fn is_valid_char_for_radix(char: &char, radix: isize) -> bool {
 }
 
 // todo: this is dumb, fix
-fn get_char_value(char: &char) -> isize {
+fn get_char_value(char: char) -> u8 {
     match char {
-        '0' => 0,
-        '1' => 1,
-        '2' => 2,
-        '3' => 3,
-        '4' => 4,
-        '5' => 5,
-        '6' => 6,
-        '7' => 7,
-        '8' => 8,
-        '9' => 9,
-        'a' => 0xa,
-        'b' => 0xb,
-        'c' => 0xc,
-        'd' => 0xd,
-        'e' => 0xe,
-        'f' => 0xf,
+        '0'..='9' => char as u8 - '0' as u8,
+        'a'..='f' => char as u8 - 'a' as u8 + 10,
         _ => panic!("no"),
     }
 }
