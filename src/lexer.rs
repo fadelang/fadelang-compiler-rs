@@ -70,7 +70,6 @@ fn is_valid_char_for_radix(char: &char, radix: isize) -> bool {
     radix_chars.chars().filter(|c| c == char).next().is_some()
 }
 
-// todo: this is dumb, fix
 fn get_char_value(char: char) -> u8 {
     match char {
         '0'..='9' => char as u8 - '0' as u8,
