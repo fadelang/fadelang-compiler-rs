@@ -8,6 +8,10 @@ where
 {
     let peek = iterator.peek()?;
 
+    if !peek.is_ascii_digit() {
+        return None;
+    }
+
     if *peek != '0' {
         let num = parse_number_radix(iterator, 10);
         return Some(LexerToken::Number(num));
@@ -24,7 +28,8 @@ where
         'b' => 2,
         'o' => 8,
         'x' => 16,
-        _ => 10,
+        '0'..='9' => 10,
+        _ => return None,
     };
 
     let num = parse_number_radix(iterator, radix);
@@ -64,7 +69,34 @@ fn get_char_value(char: char) -> u8 {
 
 #[cfg(test)]
 mod tests {
-    use crate::lexer::LexerToken;
+    use super::*;
+
+    #[test]
+    fn lex_number_no_input() {
+        let input = "";
+
+        let mut iterator = input.chars().peekable();
+        let lexed = lex_number(&mut iterator);
+        assert!(lexed.is_none(), "Lexer output is Some(?) on empty input!")
+    }
+
+    #[test]
+    fn lex_number_invalid_input() {
+        let input = "hello, world!";
+
+        let mut iterator = input.chars().peekable();
+        let lexed = lex_number(&mut iterator);
+        assert!(lexed.is_none(), "Lexer output is Some(?) on invalid input!")
+    }
+
+    #[test]
+    fn lex_number_invalid_radix_string() {
+        let input = "0z123456";
+
+        let mut iterator = input.chars().peekable();
+        let lexed = lex_number(&mut iterator);
+        assert!(lexed.is_none(), "Lexer output is Some(?) on invalid input!")
+    }
 
     #[test]
     fn lex_number_decimal() {
@@ -72,7 +104,7 @@ mod tests {
         let expected = 123_456_789;
 
         let mut iterator = input.chars().peekable();
-        let LexerToken::Number(lexed) = super::lex_number(&mut iterator).unwrap();
+        let LexerToken::Number(lexed) = lex_number(&mut iterator).unwrap();
         assert_eq!(
             lexed, expected,
             "Lexed token does not match expected token!"
@@ -85,7 +117,7 @@ mod tests {
         let expected = 0b0010_0100;
         let mut iterator = number.chars().peekable();
 
-        let number = super::parse_number_radix(&mut iterator, 2);
+        let number = parse_number_radix(&mut iterator, 2);
         assert_eq!(
             number, expected,
             "Parsed number does not equal expected number!"
@@ -98,7 +130,7 @@ mod tests {
         let expected = 0o777;
 
         let mut iterator = number.chars().peekable();
-        let number = super::parse_number_radix(&mut iterator, 8);
+        let number = parse_number_radix(&mut iterator, 8);
         assert_eq!(
             number, expected,
             "Parsed number does not equal exected number!"
@@ -111,7 +143,7 @@ mod tests {
         let expected = 0x2468_acef;
 
         let mut iterator = number.chars().peekable();
-        let number = super::parse_number_radix(&mut iterator, 16);
+        let number = parse_number_radix(&mut iterator, 16);
         assert_eq!(
             number, expected,
             "Parsed number does not equal exected number!"
