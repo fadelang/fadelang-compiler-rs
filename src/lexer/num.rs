@@ -42,7 +42,9 @@ where
 {
     let mut value: isize = 0;
     for char in iterator.by_ref() {
-        if is_valid_char_for_radix(char, radix) {
+        if char == '_' {
+            continue;
+        } else if is_valid_char_for_radix(char, radix) {
             value = value * radix as isize + get_char_value(char) as isize;
         } else {
             break;
@@ -77,7 +79,10 @@ mod tests {
 
         let mut iterator = input.chars().peekable();
         let lexed = lex_number(&mut iterator);
-        assert!(lexed.is_none(), "Lexer output is Some(?) on empty input!")
+        assert!(
+            lexed.is_none(),
+            "Lexer output is {lexed:?} on invalid input!"
+        )
     }
 
     #[test]
@@ -86,7 +91,10 @@ mod tests {
 
         let mut iterator = input.chars().peekable();
         let lexed = lex_number(&mut iterator);
-        assert!(lexed.is_none(), "Lexer output is Some(?) on invalid input!")
+        assert!(
+            lexed.is_none(),
+            "Lexer output is {lexed:?} on invalid input!"
+        )
     }
 
     #[test]
@@ -95,7 +103,24 @@ mod tests {
 
         let mut iterator = input.chars().peekable();
         let lexed = lex_number(&mut iterator);
-        assert!(lexed.is_none(), "Lexer output is Some(?) on invalid input!")
+        assert!(
+            lexed.is_none(),
+            "Lexer output is {lexed:?} on invalid input!"
+        )
+    }
+
+    #[test]
+    fn lex_number_with_separator() {
+        let input = "123_456";
+        let expected = 123_456;
+
+        let mut iterator = input.chars().peekable();
+
+        let LexerToken::Number(lexed) = lex_number(&mut iterator).unwrap();
+        assert_eq!(
+            lexed, expected,
+            "Lexed token does not match expected token!"
+        );
     }
 
     #[test]
