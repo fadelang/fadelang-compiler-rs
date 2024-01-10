@@ -3,13 +3,12 @@
 #![warn(clippy::cargo)]
 
 pub(crate) mod lexer;
-pub(crate) mod token;
 
 use std::{fs::File, io::Read};
 
 fn main() {
     let buffer = open_file("main.fl");
-    let lexed = lexer::lex(buffer);
+    let _lexed = lexer::lex(&buffer);
 }
 
 fn open_file(file_name: &str) -> String {
@@ -25,9 +24,7 @@ fn open_file(file_name: &str) -> String {
         Err(err) => panic!("error lololol : {err}"),
     };
 
-    if bytes_read == 0 {
-        panic!("bytesread == 0 thats prob bad??")
-    }
+    assert!(bytes_read != 0, "0 bytes read thats prob bad??");
 
     content_buffer
 }
