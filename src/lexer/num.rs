@@ -1,47 +1,34 @@
 use std::iter::Peekable;
 
-pub(crate) enum LexerToken {
-    //    Identifier(String),
-    //    Keyword(String),
-    Number(isize),
-}
+use super::LexerToken;
 
-pub(crate) fn lex(buffer: &str) -> Vec<LexerToken> {
-    let result = vec![];
-    let mut iterator = buffer.chars().peekable();
-
-    while let Some(&char) = iterator.peek() {
-        if char.is_ascii_digit() {}
-    }
-
-    result
-}
-
-fn lex_number<T>(iterator: &mut Peekable<T>) -> LexerToken
+pub(crate) fn lex_number<T>(iterator: &mut Peekable<T>) -> Option<LexerToken>
 where
     T: Iterator<Item = char>,
 {
-    let first = iterator.next().unwrap();
-    let second = iterator.peek().unwrap();
+    let peek = iterator.peek()?;
 
-    // todo: negatives
-
-    if first == '0' {
-        let radix: u8 = match second {
-            'b' => 2,
-            'o' => 8,
-            'x' => 16,
-            _ => 0,
-        };
-
-        if radix != 0 {
-            iterator.next().unwrap();
-            let number = parse_number_radix(iterator, radix);
-            return LexerToken::Number(number);
-        }
+    if *peek != '0' {
+        let num = parse_number_radix(iterator, 10);
+        return Some(LexerToken::Number(num));
     }
 
-    LexerToken::Number(0)
+    // first char is 0, consume
+    iterator.next().unwrap();
+
+    let Some(peek) = iterator.peek() else {
+        return Some(LexerToken::Number(0)) /* no more chars after that and we just read "0" */
+    };
+
+    let radix = match peek {
+        'b' => 2,
+        'o' => 8,
+        'x' => 16,
+        _ => 10,
+    };
+
+    let num = parse_number_radix(iterator, radix);
+    Some(LexerToken::Number(num))
 }
 
 fn parse_number_radix<T>(iterator: &mut Peekable<T>, radix: u8) -> isize
@@ -50,13 +37,10 @@ where
 {
     let mut value: isize = 0;
     for char in iterator.by_ref() {
-        // todo: cleanup
         if is_valid_char_for_radix(char, radix) {
             value = value * radix as isize + get_char_value(char) as isize;
-        } else if char == ' ' || char == '\t' || char == '\n' {
-            break;
         } else {
-            panic!("unexpected char {char} while parsing binary number value");
+            break;
         }
     }
     value
@@ -80,9 +64,23 @@ fn get_char_value(char: char) -> u8 {
 
 #[cfg(test)]
 mod tests {
+    use crate::lexer::LexerToken;
 
     #[test]
-    fn arse_number_binary() {
+    fn lex_number_decimal() {
+        let input = "123456789";
+        let expected = 123_456_789;
+
+        let mut iterator = input.chars().peekable();
+        let LexerToken::Number(lexed) = super::lex_number(&mut iterator).unwrap();
+        assert_eq!(
+            lexed, expected,
+            "Lexed token does not match expected token!"
+        );
+    }
+
+    #[test]
+    fn parse_number_binary() {
         let number = "00100100";
         let expected = 0b0010_0100;
         let mut iterator = number.chars().peekable();
