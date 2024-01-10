@@ -110,12 +110,24 @@ mod tests {
     }
 
     #[test]
+    fn lex_number_decimal_with_several_zeros_at_beginning() {
+        let input = "00123456";
+        let expected = 123456;
+
+        let mut iterator = input.chars().peekable();
+        let LexerToken::Number(lexed) = lex_number(&mut iterator).unwrap();
+        assert_eq!(
+            lexed, expected,
+            "Lexed token does not match expected token!"
+        );
+    }
+
+    #[test]
     fn lex_number_with_separator() {
         let input = "123_456";
         let expected = 123_456;
 
         let mut iterator = input.chars().peekable();
-
         let LexerToken::Number(lexed) = lex_number(&mut iterator).unwrap();
         assert_eq!(
             lexed, expected,
@@ -140,8 +152,8 @@ mod tests {
     fn parse_number_binary() {
         let number = "00100100";
         let expected = 0b0010_0100;
-        let mut iterator = number.chars().peekable();
 
+        let mut iterator = number.chars().peekable();
         let number = parse_number_radix(&mut iterator, 2);
         assert_eq!(
             number, expected,
