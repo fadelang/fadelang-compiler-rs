@@ -2,31 +2,46 @@
 #![warn(clippy::pedantic)]
 #![warn(clippy::cargo)]
 
-pub(crate) mod lexer;
+pub(crate) mod cli;
+pub(crate) mod compiler;
+pub(crate) mod err;
 
 use std::{
-    fs::File,
-    io::{self, Read},
+    path::PathBuf,
 };
 
+use clap::Parser;
+use cli::{Cli, Commands};
+
 fn main() {
-    let buf = match open_file("main.fl") {
-        Ok(buf) => buf,
-        Err(err) => handle_error(&err),
-    };
-    let _lexed = lexer::lex(&buf);
-}
+    let cli = Cli::parse();
 
-fn open_file(file_name: &str) -> io::Result<String> {
-    let mut buf = String::new();
+    match cli.command() {
+        Some(Commands::Compile { input, output }) => {
+            let input_path = match input {
+                Some(input) => input.to_path_buf(),
+                None => PathBuf::from("main.fl"),
+            };
 
-    let mut file = File::open(file_name)?;
-    let bytes_read = file.read_to_string(&mut buf)?;
-    assert!(bytes_read != 0, "0 bytes read thats prob bad??");
+            let output_path = match output {
+                Some(output) => output.to_path_buf(),
+                None => {
+                    let mut output = input_path.clone();
+                    output.set_extension(".o.fl");
+                    output
+                }
+            };
 
-    Ok(buf)
-}
+            let compiler_config = compiler::Config {
+                input_path,
+                output_path,
+            };
 
-pub(crate) fn handle_error(err: &io::Error) -> ! {
-    panic!("Unhandled Error: {err}")
+            match compiler::compile(compiler_config) {
+                Ok(_) => println!("gud!"),
+                Err(_) => println!("bad!"),
+            }
+        }
+        None => todo!(),
+    }
 }

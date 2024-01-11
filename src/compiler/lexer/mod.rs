@@ -7,9 +7,9 @@ pub(crate) enum LexerToken {
     Number(isize),
 }
 
-pub(crate) fn lex(buffer: &str) -> Vec<LexerToken> {
+pub(crate) fn lex(input: &String) -> Vec<LexerToken> {
     let result = vec![];
-    let mut iterator = buffer.chars().peekable();
+    let mut iterator = input.chars().peekable();
 
     while let Some(&char) = iterator.peek() {
         if char.is_ascii_digit() {
