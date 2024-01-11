@@ -4,27 +4,29 @@
 
 pub(crate) mod lexer;
 
-use std::{fs::File, io::Read};
+use std::{
+    fs::File,
+    io::{self, Read},
+};
 
 fn main() {
-    let buffer = open_file("main.fl");
-    let _lexed = lexer::lex(&buffer);
+    let buf = match open_file("main.fl") {
+        Ok(buf) => buf,
+        Err(err) => handle_error(err),
+    };
+    let _lexed = lexer::lex(&buf);
 }
 
-fn open_file(file_name: &str) -> String {
-    let file = File::open(file_name);
-    let mut file = match file {
-        Ok(file) => file,
-        Err(err) => panic!("file ded boohoo err: {err}"),
-    };
+fn open_file(file_name: &str) -> io::Result<String> {
+    let mut buf = String::new();
 
-    let mut content_buffer = String::new();
-    let bytes_read = match file.read_to_string(&mut content_buffer) {
-        Ok(bytes_read) => bytes_read,
-        Err(err) => panic!("error lololol : {err}"),
-    };
-
+    let mut file = File::open(file_name)?;
+    let bytes_read = file.read_to_string(&mut buf)?;
     assert!(bytes_read != 0, "0 bytes read thats prob bad??");
 
-    content_buffer
+    Ok(buf)
+}
+
+pub(crate) fn handle_error(err: io::Error) -> ! {
+    panic!("Unhandled Error: {err}")
 }
