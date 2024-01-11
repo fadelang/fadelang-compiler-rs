@@ -44,8 +44,10 @@ where
     for char in iterator.by_ref() {
         if char == '_' {
             continue;
-        } else if is_valid_char_for_radix(char, radix) {
-            value = value * radix as isize + get_char_value(char) as isize;
+        }
+
+        if is_valid_char_for_radix(char, radix) {
+            value = value * isize::from(radix) + isize::from(get_char_value(char));
         } else {
             break;
         }
@@ -82,7 +84,7 @@ mod tests {
         assert!(
             lexed.is_none(),
             "Lexer output is {lexed:?} on invalid input!"
-        )
+        );
     }
 
     #[test]
@@ -94,7 +96,7 @@ mod tests {
         assert!(
             lexed.is_none(),
             "Lexer output is {lexed:?} on invalid input!"
-        )
+        );
     }
 
     #[test]
@@ -106,13 +108,13 @@ mod tests {
         assert!(
             lexed.is_none(),
             "Lexer output is {lexed:?} on invalid input!"
-        )
+        );
     }
 
     #[test]
     fn lex_number_decimal_with_several_zeros_at_beginning() {
         let input = "00123456";
-        let expected = 123456;
+        let expected = 123_456;
 
         let mut iterator = input.chars().peekable();
         let LexerToken::Number(lexed) = lex_number(&mut iterator).unwrap();

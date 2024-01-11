@@ -12,7 +12,7 @@ use std::{
 fn main() {
     let buf = match open_file("main.fl") {
         Ok(buf) => buf,
-        Err(err) => handle_error(err),
+        Err(err) => handle_error(&err),
     };
     let _lexed = lexer::lex(&buf);
 }
@@ -27,6 +27,6 @@ fn open_file(file_name: &str) -> io::Result<String> {
     Ok(buf)
 }
 
-pub(crate) fn handle_error(err: io::Error) -> ! {
+pub(crate) fn handle_error(err: &io::Error) -> ! {
     panic!("Unhandled Error: {err}")
 }
