@@ -1,4 +1,4 @@
-use std::iter::Peekable;
+use std::{iter::Peekable, usize};
 
 use super::LexerToken;
 
@@ -56,7 +56,7 @@ where
 }
 
 fn is_valid_char_for_radix(char: char, radix: u8) -> bool {
-    let radix_usize = radix as usize;
+    let radix_usize = usize::from(radix);
     let valid_chars = "0123456789abcdef";
     let radix_chars = &valid_chars[..radix_usize];
 
