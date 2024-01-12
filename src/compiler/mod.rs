@@ -1,4 +1,5 @@
 pub(crate) mod error;
+pub(crate) mod keywords;
 pub(crate) mod lexer;
 
 use std::{
@@ -18,12 +19,11 @@ pub(crate) fn compile(config: &Config) -> error::Result<()> {
     let mut input_file = get_input_file(&config.input_path)?;
     let input = read_file(&mut input_file)?;
 
-    let _lexed = lexer::lex(&input);
+    let lexed = lexer::lex(&input);
+    let lexed_string = format!("{lexed:?}");
 
     let mut output_file = get_output_file(&config.output_path)?;
-    output_file
-        .write_all(&String::from("test").into_bytes())
-        .unwrap();
+    output_file.write_all(&lexed_string.into_bytes()).unwrap();
 
     Ok(())
 }

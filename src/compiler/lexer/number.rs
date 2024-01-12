@@ -74,6 +74,18 @@ fn get_char_value(char: char) -> u8 {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use core::panic;
+
+    fn __lex_number(input: &str, expected: isize) {
+        let mut iterator = input.chars().peekable();
+        let LexerToken::Number(lexed) = lex_number(&mut iterator).unwrap() else {
+            panic!("Lexer retrieved not a number!");
+        };
+        assert_eq!(
+            lexed, expected,
+            "Lexed token does not match expected token!"
+        );
+    }
 
     #[test]
     fn lex_number_no_input() {
@@ -115,39 +127,21 @@ mod tests {
     fn lex_number_decimal_with_several_zeros_at_beginning() {
         let input = "00123456";
         let expected = 123_456;
-
-        let mut iterator = input.chars().peekable();
-        let LexerToken::Number(lexed) = lex_number(&mut iterator).unwrap();
-        assert_eq!(
-            lexed, expected,
-            "Lexed token does not match expected token!"
-        );
+        __lex_number(input, expected);
     }
 
     #[test]
     fn lex_number_with_separator() {
         let input = "123_456";
         let expected = 123_456;
-
-        let mut iterator = input.chars().peekable();
-        let LexerToken::Number(lexed) = lex_number(&mut iterator).unwrap();
-        assert_eq!(
-            lexed, expected,
-            "Lexed token does not match expected token!"
-        );
+        __lex_number(input, expected);
     }
 
     #[test]
     fn lex_number_decimal() {
         let input = "123456789";
         let expected = 123_456_789;
-
-        let mut iterator = input.chars().peekable();
-        let LexerToken::Number(lexed) = lex_number(&mut iterator).unwrap();
-        assert_eq!(
-            lexed, expected,
-            "Lexed token does not match expected token!"
-        );
+        __lex_number(input, expected);
     }
 
     #[test]
