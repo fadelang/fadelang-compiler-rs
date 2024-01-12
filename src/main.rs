@@ -35,8 +35,8 @@ fn main() {
             };
 
             match compiler::compile(&compiler_config) {
-                Ok(_) => println!("gud!"),
-                Err(_) => println!("bad!"),
+                Ok(_) => println!("Compilation successful!"),
+                Err(error) => println!("Compilation failed! {error:?}"),
             }
         }
         None => println!("{cli:?}"),
