@@ -7,7 +7,7 @@ pub(crate) enum LexerToken {
     Number(isize),
 }
 
-pub(crate) fn lex(input: &String) -> Vec<LexerToken> {
+pub(crate) fn lex(input: &str) -> Vec<LexerToken> {
     let result = vec![];
     let mut iterator = input.chars().peekable();
 

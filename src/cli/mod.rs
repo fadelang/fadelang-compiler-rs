@@ -11,7 +11,7 @@ pub(crate) struct Cli {
 
 impl Cli {
     pub fn command(&self) -> &Option<Commands> {
-        return &self.command;
+        &self.command
     }
 }
 

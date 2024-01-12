@@ -4,11 +4,8 @@
 
 pub(crate) mod cli;
 pub(crate) mod compiler;
-pub(crate) mod err;
 
-use std::{
-    path::PathBuf,
-};
+use std::path::PathBuf;
 
 use clap::Parser;
 use cli::{Cli, Commands};
@@ -19,12 +16,12 @@ fn main() {
     match cli.command() {
         Some(Commands::Compile { input, output }) => {
             let input_path = match input {
-                Some(input) => input.to_path_buf(),
+                Some(input) => input.clone(),
                 None => PathBuf::from("main.fl"),
             };
 
             let output_path = match output {
-                Some(output) => output.to_path_buf(),
+                Some(output) => output.clone(),
                 None => {
                     let mut output = input_path.clone();
                     output.set_extension(".o.fl");
@@ -37,7 +34,7 @@ fn main() {
                 output_path,
             };
 
-            match compiler::compile(compiler_config) {
+            match compiler::compile(&compiler_config) {
                 Ok(_) => println!("gud!"),
                 Err(_) => println!("bad!"),
             }
