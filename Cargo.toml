@@ -15,3 +15,7 @@ categories = ["development-tools"]
 
 [dependencies]
 clap = { version = "4.4.15", features = ["derive"] }
+
+[[bin]]
+name = "flc"
+path = "src/main.rs"

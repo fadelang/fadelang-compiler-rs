@@ -24,7 +24,7 @@ fn main() {
                 Some(output) => output.clone(),
                 None => {
                     let mut output = input_path.clone();
-                    output.set_extension(".o.fl");
+                    output.set_extension("o.fl");
                     output
                 }
             };
@@ -39,6 +39,6 @@ fn main() {
                 Err(_) => println!("bad!"),
             }
         }
-        None => todo!(),
+        None => println!("{cli:?}"),
     }
 }

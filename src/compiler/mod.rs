@@ -15,12 +15,12 @@ pub(crate) struct Config {
 }
 
 pub(crate) fn compile(config: &Config) -> error::Result<()> {
-    let mut input_file = get_file(&config.input_path)?;
+    let mut input_file = get_input_file(&config.input_path)?;
     let input = read_file(&mut input_file)?;
 
     let _lexed = lexer::lex(&input);
 
-    let mut output_file = get_file(&config.output_path)?;
+    let mut output_file = get_output_file(&config.output_path)?;
     output_file
         .write_all(&String::from("test").into_bytes())
         .unwrap();
@@ -28,7 +28,7 @@ pub(crate) fn compile(config: &Config) -> error::Result<()> {
     Ok(())
 }
 
-fn get_file(path: &PathBuf) -> error::Result<File> {
+fn get_input_file(path: &PathBuf) -> error::Result<File> {
     if !path.exists() {
         return Err(CompilerError::FileError(FileError::DoesNotExist {
             _path: path.clone(),
@@ -36,6 +36,16 @@ fn get_file(path: &PathBuf) -> error::Result<File> {
     }
 
     let Ok(file) = File::open(path) else {
+        return Err(CompilerError::FileError(
+            FileError::Invalid { _path: path.clone() })
+        );
+    };
+
+    Ok(file)
+}
+
+fn get_output_file(path: &PathBuf) -> error::Result<File> {
+    let Ok(file) = File::create(path) else {
         return Err(CompilerError::FileError(
             FileError::Invalid { _path: path.clone() })
         );

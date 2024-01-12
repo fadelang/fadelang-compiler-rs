@@ -15,6 +15,8 @@ pub(crate) fn lex(input: &str) -> Vec<LexerToken> {
         if char.is_ascii_digit() {
             num::lex_number(&mut iterator); // this is just here so cargo check does not complain about unused code :sob:
         }
+
+        break;
     }
 
     result
