@@ -20,7 +20,7 @@ pub(crate) fn compile(config: &Config) -> error::Result<()> {
     let input = read_file(&mut input_file)?;
 
     let lexed = lexer::lex(&input);
-    let lexed_string = format!("{lexed:?}");
+    let lexed_string = format!("{lexed:#?}");
 
     let mut output_file = get_output_file(&config.output_path)?;
     output_file.write_all(&lexed_string.into_bytes()).unwrap();

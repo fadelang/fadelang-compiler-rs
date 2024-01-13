@@ -3,7 +3,7 @@ use crate::compiler::keywords;
 use super::LexerToken;
 use std::iter::Peekable;
 
-pub(crate) fn lex_identifier_or_keyword<T>(iterator: &mut Peekable<T>) -> Option<LexerToken>
+pub(crate) fn lex<T>(iterator: &mut Peekable<T>) -> Option<LexerToken>
 where
     T: Iterator<Item = char>,
 {

@@ -15,7 +15,7 @@ pub(crate) enum ParenthesisType {
     Angle,  // < >
 }
 
-pub(crate) fn lex_parentheses<T>(iterator: &mut Peekable<T>) -> Option<LexerToken>
+pub(crate) fn lex<T>(iterator: &mut Peekable<T>) -> Option<LexerToken>
 where
     T: Iterator<Item = char>,
 {

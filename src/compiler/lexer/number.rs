@@ -2,7 +2,7 @@ use std::{iter::Peekable, usize};
 
 use super::LexerToken;
 
-pub(crate) fn lex_number<T>(iterator: &mut Peekable<T>) -> Option<LexerToken>
+pub(crate) fn lex<T>(iterator: &mut Peekable<T>) -> Option<LexerToken>
 where
     T: Iterator<Item = char>,
 {
