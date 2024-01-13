@@ -8,8 +8,8 @@ where
     let mut whitespace = false;
 
     while let Some(peek) = iterator.peek() {
-        if !peek.is_whitespace() {
-            return None;
+        if !peek.is_ascii_whitespace() {
+            break;
         }
 
         iterator.next()?;

@@ -29,7 +29,9 @@ where
         'o' => 8,
         'x' => 16,
         '0'..='9' => 10,
+        ' ' | ',' | ';'  => return Some(LexerToken::Number(0)),
         _ => return None,
+
     };
 
     let num = parse_number_radix(iterator, radix);
@@ -76,9 +78,9 @@ mod tests {
     use super::*;
     use core::panic;
 
-    fn __lex_number(input: &str, expected: isize) {
+    fn __lex(input: &str, expected: isize) {
         let mut iterator = input.chars().peekable();
-        let LexerToken::Number(lexed) = lex_number(&mut iterator).unwrap() else {
+        let LexerToken::Number(lexed) = lex(&mut iterator).unwrap() else {
             panic!("Lexer retrieved not a number!");
         };
         assert_eq!(
@@ -88,11 +90,11 @@ mod tests {
     }
 
     #[test]
-    fn lex_number_no_input() {
+    fn lex_no_input() {
         let input = "";
 
         let mut iterator = input.chars().peekable();
-        let lexed = lex_number(&mut iterator);
+        let lexed = lex(&mut iterator);
         assert!(
             lexed.is_none(),
             "Lexer output is {lexed:?} on invalid input!"
@@ -100,11 +102,11 @@ mod tests {
     }
 
     #[test]
-    fn lex_number_invalid_input() {
+    fn lex_invalid_input() {
         let input = "hello, world!";
 
         let mut iterator = input.chars().peekable();
-        let lexed = lex_number(&mut iterator);
+        let lexed = lex(&mut iterator);
         assert!(
             lexed.is_none(),
             "Lexer output is {lexed:?} on invalid input!"
@@ -112,11 +114,11 @@ mod tests {
     }
 
     #[test]
-    fn lex_number_invalid_radix_string() {
+    fn lex_invalid_radix_string() {
         let input = "0z123456";
 
         let mut iterator = input.chars().peekable();
-        let lexed = lex_number(&mut iterator);
+        let lexed = lex(&mut iterator);
         assert!(
             lexed.is_none(),
             "Lexer output is {lexed:?} on invalid input!"
@@ -124,24 +126,31 @@ mod tests {
     }
 
     #[test]
-    fn lex_number_decimal_with_several_zeros_at_beginning() {
+    fn lex_zero() {
+        let input = "0;";
+        let expected = 0;
+        __lex(input, expected);
+    }
+
+    #[test]
+    fn lex_decimal_with_several_zeros_at_beginning() {
         let input = "00123456";
         let expected = 123_456;
-        __lex_number(input, expected);
+        __lex(input, expected);
     }
 
     #[test]
-    fn lex_number_with_separator() {
+    fn lex_with_separator() {
         let input = "123_456";
         let expected = 123_456;
-        __lex_number(input, expected);
+        __lex(input, expected);
     }
 
     #[test]
-    fn lex_number_decimal() {
+    fn lex_decimal() {
         let input = "123456789";
         let expected = 123_456_789;
-        __lex_number(input, expected);
+        __lex(input, expected);
     }
 
     #[test]

@@ -12,7 +12,7 @@ macro_rules! lex {
         let mut result = vec![];
         let mut iterator = $input.chars().peekable();
 
-        while let Some(_peek) = iterator.peek() {
+        while let Some(_) = iterator.peek() {
             let mut none = true;
 
             $(if let Some(token) = $lexer::lex(&mut iterator) {
@@ -31,6 +31,7 @@ pub(crate) enum LexerToken {
     Identifier(String),
     Keyword(Keyword),
     Parentheses(Parentheses),
+    Operator(String), // todo: replace String with custom enum
     Number(isize),
     Whitespace,
 }
