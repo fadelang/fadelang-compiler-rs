@@ -75,17 +75,23 @@ fn get_char_value(char: char) -> u8 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use core::panic;
 
-    fn __lex(input: &str, expected: isize) {
-        let mut iterator = input.chars().peekable();
-        let LexerToken::Number(lexed) = lex(&mut iterator).unwrap() else {
-            panic!("Lexer retrieved not a number!");
+    macro_rules! assert_lex {
+        (input = $input:literal, expected = $expected:literal) => {
+            let mut iterator = $input.chars().peekable();
+            let LexerToken::Number(lexed) = lex(&mut iterator).unwrap() else {
+                core::panic!("Lexer output is not a number!");
+            };
+            assert_eq!(lexed, $expected, "Lexed token value does not match expected value!");
         };
-        assert_eq!(
-            lexed, expected,
-            "Lexed token does not match expected token!"
-        );
+    }
+
+    macro_rules! assert_parse {
+        (input = $input:literal, radix = $radix:literal, expected = $expected:literal) => {
+            let mut iterator = $input.chars().peekable();
+            let number = parse_number_radix(&mut iterator, $radix);
+            assert_eq!(number, $expected, "Parsed number does not equal exected number!");
+        };
     }
 
     #[test]
@@ -125,69 +131,35 @@ mod tests {
     }
 
     #[test]
-    fn lex_zero() {
-        let input = "0;";
-        let expected = 0;
-        __lex(input, expected);
-    }
+    fn lex_zero() { assert_lex!(input = "0;", expected = 0); }
 
     #[test]
     fn lex_decimal_with_several_zeros_at_beginning() {
-        let input = "00123456";
-        let expected = 123_456;
-        __lex(input, expected);
+        assert_lex!(input = "00123456", expected = 123_456);
     }
 
     #[test]
     fn lex_with_separator() {
-        let input = "123_456";
-        let expected = 123_456;
-        __lex(input, expected);
+        assert_lex!(input = "123_456", expected = 123_456);
     }
 
     #[test]
     fn lex_decimal() {
-        let input = "123456789";
-        let expected = 123_456_789;
-        __lex(input, expected);
+        assert_lex!(input = "123456789", expected = 123_456_789);
     }
 
     #[test]
     fn parse_number_binary() {
-        let number = "00100100";
-        let expected = 0b0010_0100;
-
-        let mut iterator = number.chars().peekable();
-        let number = parse_number_radix(&mut iterator, 2);
-        assert_eq!(
-            number, expected,
-            "Parsed number does not equal expected number!"
-        );
+        assert_parse!(input = "00100100", radix = 2, expected = 0b00100100);
     }
 
     #[test]
     fn parse_number_octal() {
-        let number = "777";
-        let expected = 0o777;
-
-        let mut iterator = number.chars().peekable();
-        let number = parse_number_radix(&mut iterator, 8);
-        assert_eq!(
-            number, expected,
-            "Parsed number does not equal exected number!"
-        );
+        assert_parse!(input = "777", radix = 8, expected = 0o777);
     }
 
     #[test]
     fn parse_number_hex() {
-        let number = "2468acef";
-        let expected = 0x2468_acef;
-
-        let mut iterator = number.chars().peekable();
-        let number = parse_number_radix(&mut iterator, 16);
-        assert_eq!(
-            number, expected,
-            "Parsed number does not equal exected number!"
-        );
+        assert_parse!(input = "2468acef", radix = 16, expected = 0x2468_acef);
     }
 }
