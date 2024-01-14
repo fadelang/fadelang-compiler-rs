@@ -79,9 +79,7 @@ mod tests {
     macro_rules! assert_lex {
         (input = $input:literal, expected = $expected:literal) => {
             let mut iterator = $input.chars().peekable();
-            let LexerToken::Number(lexed) = lex(&mut iterator).unwrap() else {
-                core::panic!("Lexer output is not a number!");
-            };
+            let LexerToken::Number(lexed) = lex(&mut iterator).unwrap() else { panic!("Lexer output is not a number!"); };
             assert_eq!(lexed, $expected, "Lexed token value does not match expected value!");
         };
     }
@@ -90,7 +88,10 @@ mod tests {
         (input = $input:literal, radix = $radix:literal, expected = $expected:literal) => {
             let mut iterator = $input.chars().peekable();
             let number = parse_number_radix(&mut iterator, $radix);
-            assert_eq!(number, $expected, "Parsed number does not equal exected number!");
+            assert_eq!(
+                number, $expected,
+                "Parsed number does not equal expected number!"
+            );
         };
     }
 
@@ -131,7 +132,9 @@ mod tests {
     }
 
     #[test]
-    fn lex_zero() { assert_lex!(input = "0;", expected = 0); }
+    fn lex_zero() {
+        assert_lex!(input = "0;", expected = 0);
+    }
 
     #[test]
     fn lex_decimal_with_several_zeros_at_beginning() {
