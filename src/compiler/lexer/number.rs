@@ -29,9 +29,8 @@ where
         'o' => 8,
         'x' => 16,
         '0'..='9' => 10,
-        ' ' | ',' | ';'  => return Some(LexerToken::Number(0)),
+        ' ' | ',' | ';' => return Some(LexerToken::Number(0)),
         _ => return None,
-
     };
 
     let num = parse_number_radix(iterator, radix);

@@ -7,7 +7,7 @@ where
 {
     while let Some(peek) = iterator.peek() {
         if matches!(peek, ':' | '-' | ';') {
-            return Some(LexerToken::Operator(String::from(iterator.next()?)))
+            return Some(LexerToken::Operator(String::from(iterator.next()?)));
         }
 
         break;
