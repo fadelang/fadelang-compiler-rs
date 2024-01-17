@@ -153,7 +153,7 @@ mod tests {
 
     #[test]
     fn parse_number_binary() {
-        assert_parse!(input = "00100100", radix = 2, expected = 0b00100100);
+        assert_parse!(input = "00100100", radix = 2, expected = 0b0010_0100);
     }
 
     #[test]

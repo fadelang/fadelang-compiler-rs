@@ -5,12 +5,12 @@ pub(crate) fn lex<T>(iterator: &mut Peekable<T>) -> Option<LexerToken>
 where
     T: Iterator<Item = char>,
 {
-    while let Some(peek) = iterator.peek() {
+    if let Some(peek) = iterator.peek() {
         if matches!(peek, ':' | '-' | ';') {
             return Some(LexerToken::Operator(String::from(iterator.next()?)));
         }
 
-        break;
+//         break;
     }
 
     None
