@@ -8,37 +8,33 @@ pub(crate) mod compiler;
 use std::path::PathBuf;
 
 use clap::Parser;
-use cli::{Cli, Commands};
+use cli::Cli;
 
 fn main() {
     let cli = Cli::parse();
 
-    match cli.command() {
-        Some(Commands::Compile { input, output }) => {
-            let input_path = match input {
-                Some(input) => input.clone(),
-                None => PathBuf::from("main.fl"),
+    match cli {
+        Cli::Compile { input, output } => {
+            let input = if let Some(input) = input {
+                input
+            } else {
+                PathBuf::from("main.fl")
             };
 
-            let output_path = match output {
-                Some(output) => output.clone(),
-                None => {
-                    let mut output = input_path.clone();
-                    output.set_extension("o.fl");
-                    output
-                }
+            let output = if let Some(output) = output {
+                output
+            } else {
+                let mut output = input.clone();
+                output.set_extension("o.fl");
+                output
             };
 
-            let compiler_config = compiler::Config {
-                input_path,
-                output_path,
-            };
+            let compiler_config = compiler::Config { input, output };
 
             match compiler::compile(&compiler_config) {
                 Ok(_) => println!("Compilation successful!"),
                 Err(error) => println!("Compilation failed! {error:?}"),
             }
         }
-        None => println!("{cli:?}"),
     }
 }

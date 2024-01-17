@@ -10,7 +10,7 @@ where
             return Some(LexerToken::Operator(String::from(iterator.next()?)));
         }
 
-//         break;
+        //         break;
     }
 
     None

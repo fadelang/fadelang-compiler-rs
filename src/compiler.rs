@@ -11,18 +11,18 @@ use std::{
 use self::error::{CompilerError, FileError};
 
 pub(crate) struct Config {
-    pub(crate) input_path: PathBuf,
-    pub(crate) output_path: PathBuf,
+    pub(crate) input: PathBuf,
+    pub(crate) output: PathBuf,
 }
 
 pub(crate) fn compile(config: &Config) -> error::Result<()> {
-    let mut input_file = get_input_file(&config.input_path)?;
+    let mut input_file = get_input_file(&config.input)?;
     let input = read_file(&mut input_file)?;
 
     let lexed = lexer::lex(&input);
     let lexed_string = format!("{lexed:#?}");
 
-    let mut output_file = get_output_file(&config.output_path)?;
+    let mut output_file = get_output_file(&config.output)?;
     output_file.write_all(&lexed_string.into_bytes()).unwrap();
 
     Ok(())

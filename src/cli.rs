@@ -1,22 +1,10 @@
 use std::path::PathBuf;
 
-use clap::{Parser, Subcommand};
+use clap::Parser;
 
 #[derive(Debug, Parser)]
 #[command(author, version, about)]
-pub(crate) struct Cli {
-    #[command(subcommand)]
-    command: Option<Commands>,
-}
-
-impl Cli {
-    pub fn command(&self) -> &Option<Commands> {
-        &self.command
-    }
-}
-
-#[derive(Debug, Subcommand)]
-pub(crate) enum Commands {
+pub(crate) enum Cli {
     #[clap(alias = "c")]
     Compile {
         #[arg(short, long, default_value = "main.fl")]
