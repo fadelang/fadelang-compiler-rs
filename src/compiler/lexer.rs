@@ -1,5 +1,6 @@
 use crate::compiler::lexer::parentheses::BracketKind;
 
+pub(crate) mod comments;
 pub(crate) mod identifiers;
 pub(crate) mod number;
 pub(crate) mod operators;
@@ -51,6 +52,6 @@ pub(crate) enum LexerToken {
 pub(crate) fn lex(input: &str) -> Vec<LexerToken> {
     lex! {
         source = input,
-        lexers = identifiers number operators parentheses whitespace
+        lexers = comments identifiers number operators parentheses whitespace
     }
 }

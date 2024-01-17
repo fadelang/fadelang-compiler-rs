@@ -5,7 +5,7 @@ pub(crate) type Result<T> = std::result::Result<T, CompilerMessage>;
 #[derive(Debug)]
 pub(crate) enum CompilerMessage {
     Error(Error),
-    Warning(),
+    //    Warning(),
 }
 
 #[derive(Debug)]
