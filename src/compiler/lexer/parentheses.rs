@@ -3,7 +3,6 @@ use std::iter::Peekable;
 
 #[derive(Debug)]
 pub(crate) enum BracketKind {
-
     /// {
     OpenBrace,
 
@@ -21,7 +20,6 @@ pub(crate) enum BracketKind {
 
     /// )
     ClosedParenthesis,
-
 }
 
 impl BracketKind {

@@ -16,6 +16,9 @@ pub(crate) struct Config {
 }
 
 pub(crate) fn compile(config: &Config) -> error::Result<()> {
+    // pipeline
+    // read -> lex -> parse -> compile -> link -> write
+
     let mut input_file = get_input_file(&config.input)?;
     let input = read_file(&mut input_file)?;
 

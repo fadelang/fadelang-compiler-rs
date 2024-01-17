@@ -19,3 +19,4 @@ categories = ["development-tools"]
 
 [dependencies]
 clap = { version = "4.4", features = ["derive"] }
+colored = "2.1"
