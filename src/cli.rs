@@ -7,7 +7,7 @@ use clap::Parser;
 pub(crate) enum Cli {
     #[clap(alias = "c")]
     Compile {
-        #[arg(short, long, default_value = "main.fl")]
+        #[arg(short, long, default_value = "main.lu")]
         input: Option<PathBuf>,
 
         #[arg(short, long)]

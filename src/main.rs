@@ -18,14 +18,14 @@ fn main() {
             let input = if let Some(input) = input {
                 input
             } else {
-                PathBuf::from("main.fl")
+                PathBuf::from("main.lu")
             };
 
             let output = if let Some(output) = output {
                 output
             } else {
                 let mut output = input.clone();
-                output.set_extension("o.fl");
+                output.set_extension("o.lu");
                 output
             };
 
