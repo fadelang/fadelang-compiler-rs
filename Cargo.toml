@@ -1,21 +1,21 @@
 [package]
-name = "fadelang-compiler"
+name = "luft"
 version = "0.1.0"
 edition = "2021"
 
-description = "Fadelang Compiler"
-license = "MIT"
-readme = "README.md"
-repository = "https://github.com/fadelang/fadelang-compiler-rs"
+authors = ["fade <truefadeoffical@gmail.com>"]
 
-keywords = ["fadelang"]
+description = "Luft Build Tool"
+documentation = "https://luftlang.github.io/"
+readme = "README.md"
+
+license = "MIT"
+repository = "https://github.com/luftlang/luft"
+
+keywords = ["luftlang", "luft"]
 categories = ["development-tools"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 clap = { version = "4.4", features = ["derive"] }
-
-[[bin]]
-name = "flc"
-path = "src/main.rs"
