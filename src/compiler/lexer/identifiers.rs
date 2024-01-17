@@ -1,5 +1,3 @@
-use crate::compiler::keywords;
-
 use super::LexerToken;
 use std::iter::Peekable;
 
@@ -21,10 +19,6 @@ where
 
     if buffer.is_empty() {
         return None;
-    }
-
-    if let Some(keyword) = keywords::get_keyword(&buffer) {
-        return Some(LexerToken::Keyword(keyword));
     }
 
     Some(LexerToken::Identifier(buffer))

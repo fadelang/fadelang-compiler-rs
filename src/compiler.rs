@@ -8,7 +8,7 @@ use std::{
     path::PathBuf,
 };
 
-use self::error::{CompilerError, FileError};
+use self::error::{CompilerMessage, Error};
 
 pub(crate) struct Config {
     pub(crate) input: PathBuf,
@@ -30,14 +30,14 @@ pub(crate) fn compile(config: &Config) -> error::Result<()> {
 
 fn get_input_file(path: &PathBuf) -> error::Result<File> {
     if !path.exists() {
-        return Err(CompilerError::FileError(FileError::DoesNotExist {
+        return Err(CompilerMessage::Error(Error::DoesNotExist {
             _path: path.clone(),
         }));
     }
 
     let Ok(file) = File::open(path) else {
-        return Err(CompilerError::FileError(
-            FileError::Invalid { _path: path.clone() })
+        return Err(CompilerMessage::Error(
+            Error::Invalid { _path: path.clone() })
         );
     };
 
@@ -46,8 +46,8 @@ fn get_input_file(path: &PathBuf) -> error::Result<File> {
 
 fn get_output_file(path: &PathBuf) -> error::Result<File> {
     let Ok(file) = File::create(path) else {
-        return Err(CompilerError::FileError(
-            FileError::Invalid { _path: path.clone() })
+        return Err(CompilerMessage::Error(
+            Error::Invalid { _path: path.clone() })
         );
     };
 
@@ -59,7 +59,7 @@ fn read_file(input_file: &mut File) -> error::Result<String> {
 
     match input_file.read_to_string(&mut buffer) {
         Ok(_) => (),
-        Err(_) => return Err(CompilerError::FileError(FileError::Unreadable)),
+        Err(_) => return Err(CompilerMessage::Error(Error::Unreadable)),
     }
 
     Ok(buffer)

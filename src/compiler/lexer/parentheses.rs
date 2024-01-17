@@ -2,17 +2,39 @@ use super::LexerToken;
 use std::iter::Peekable;
 
 #[derive(Debug)]
-pub(crate) enum Parentheses {
-    Open(ParenthesisType),
-    Closed(ParenthesisType),
+pub(crate) enum BracketKind {
+
+    /// {
+    OpenBrace,
+
+    /// }
+    ClosedBrace,
+
+    /// [
+    OpenBracket,
+
+    /// ]
+    ClosedBracket,
+
+    /// (
+    OpenParenthesis,
+
+    /// )
+    ClosedParenthesis,
+
 }
 
-#[derive(Debug)]
-pub(crate) enum ParenthesisType {
-    Braces, // { }
-    Square, // [ ]
-    Round,  // ( )
-    Angle,  // < >
+impl BracketKind {
+    fn matching_brace(&self) -> Self {
+        match *self {
+            Self::OpenBrace => Self::ClosedBrace,
+            Self::ClosedBrace => Self::OpenBrace,
+            Self::OpenBracket => Self::ClosedBracket,
+            Self::ClosedBracket => Self::OpenBracket,
+            Self::OpenParenthesis => Self::ClosedParenthesis,
+            Self::ClosedParenthesis => Self::OpenParenthesis,
+        }
+    }
 }
 
 pub(crate) fn lex<T>(iterator: &mut Peekable<T>) -> Option<LexerToken>
@@ -29,14 +51,12 @@ where
         };
 
         let paren = match char {
-            '(' => Some(Parentheses::Open(ParenthesisType::Round)),
-            ')' => Some(Parentheses::Closed(ParenthesisType::Round)),
-            '[' => Some(Parentheses::Open(ParenthesisType::Square)),
-            ']' => Some(Parentheses::Closed(ParenthesisType::Square)),
-            '{' => Some(Parentheses::Open(ParenthesisType::Braces)),
-            '}' => Some(Parentheses::Closed(ParenthesisType::Braces)),
-            '<' => Some(Parentheses::Open(ParenthesisType::Angle)),
-            '>' => Some(Parentheses::Closed(ParenthesisType::Angle)),
+            '(' => Some(BracketKind::OpenParenthesis),
+            ')' => Some(BracketKind::ClosedParenthesis),
+            '[' => Some(BracketKind::OpenBracket),
+            ']' => Some(BracketKind::ClosedBracket),
+            '{' => Some(BracketKind::OpenBrace),
+            '}' => Some(BracketKind::ClosedBrace),
             _ => None,
         };
 
