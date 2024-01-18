@@ -1,3 +1,5 @@
+use crate::compiler::operators::Operator;
+
 use super::LexerToken;
 use std::iter::Peekable;
 
@@ -5,22 +7,22 @@ pub(crate) fn lex<T>(iterator: &mut Peekable<T>) -> Option<LexerToken>
 where
     T: Iterator<Item = char>,
 {
-    let peek = *iterator.peek()?;
-    if peek != '/' {
-        return None;
-    }
-    iterator.next()?;
-
     enum CommentKind {
         Line,
         Block,
     }
 
     let peek = *iterator.peek()?;
+    if peek != '/' {
+        return None;
+    }
+    iterator.next()?;
+
+    let peek = *iterator.peek()?;
     let kind = match peek {
         '/' => CommentKind::Line,
         '*' => CommentKind::Block,
-        _ => return None,
+        _ => return Some(LexerToken::Operator(Operator::Division)),
     };
 
     match kind {
@@ -32,9 +34,7 @@ where
         },
         CommentKind::Block => loop {
             let next = iterator.next();
-            if next.is_none() {
-                panic!("Block comment ended before '*/'");
-            }
+            assert!(next.is_some(), "Block comment ended before '*/'");
             let next = next?;
 
             if next != '*' {
@@ -42,9 +42,7 @@ where
             }
 
             let peek = iterator.peek();
-            if peek.is_none() {
-                panic!("Block comment ended before '*/'");
-            }
+            assert!(peek.is_some(), "Block comment ended before '*/'");
 
             let peek = *peek?;
             if peek == '/' {
@@ -53,6 +51,6 @@ where
             }
         },
     }
-    
+
     Some(LexerToken::Comment(String::new()))
 }

@@ -1,6 +1,7 @@
 pub(crate) mod error;
 pub(crate) mod keywords;
 pub(crate) mod lexer;
+pub(crate) mod operators;
 
 use std::{
     fs::File,

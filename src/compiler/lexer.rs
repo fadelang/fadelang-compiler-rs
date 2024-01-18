@@ -1,5 +1,7 @@
 use crate::compiler::lexer::parentheses::BracketKind;
 
+use super::operators::Operator;
+
 pub(crate) mod comments;
 pub(crate) mod identifiers;
 pub(crate) mod number;
@@ -28,25 +30,25 @@ macro_rules! lex {
 
 #[derive(Debug)]
 pub(crate) enum LexerToken {
-    /* Comments and Whitespace */
+    /* Comments & Whitespace */
     Whitespace,
     Comment(String),
 
-    /* Identifiers and Keywords */
+    /* Identifiers & Keywords */
     Identifier(String),
-    Keyword(String),
+    //    Keyword(String),
 
     /* Literals */
     Number(isize),
-    FloatingPointNumber(f64),
+    //    FloatingPointNumber(f64),
 
-    Character(char),
-    Boolean(bool),
-    String(String),
+    //    Character(char),
+    //    Boolean(bool),
+    //    String(String),
 
     /* Punctuation */
     Parentheses(BracketKind),
-    Operator(String), // todo: replace String with custom enum
+    Operator(Operator),
 }
 
 pub(crate) fn lex(input: &str) -> Vec<LexerToken> {
